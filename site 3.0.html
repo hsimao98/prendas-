@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafios de Natal para a Allison</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #c0392b;
+            color: #fff;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            background-color: #fff;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            color: #9b1c2f;
+        }
+        .heart-button, .button {
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px 30px;
+            margin: 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .heart-button:hover, .button:hover {
+            background-color: #b72d47;
+        }
+        #memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            justify-content: center;
+            margin: 20px auto;
+            width: 100%;
+            max-width: 300px;
+        }
+        .card {
+            width: 100%;
+            height: 80px;
+            background-color: #e74c3c;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+        .card.flipped {
+            background-color: #fff;
+            color: #9b1c2f;
+        }
+        .quiz-container {
+            text-align: left;
+        }
+        .quiz-question {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        .quiz-options {
+            list-style-type: none;
+            padding: 0;
+        }
+        .quiz-options li {
+            margin: 10px 0;
+        }
+        .quiz-options button {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px;
+        }
+        .quiz-options button:hover {
+            background-color: #b72d47;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .button, .heart-button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+            #memory-game {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .card {
+                height: 60px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="intro" class="container">
+    <h1>Amor, sê bem-vinda ao teu jogo de Natal!</h1>
+    <p>A partir daqui é que se vai ver se mereces todas aquelas prendas... AHAHAHA</p>
+    <button class="heart-button" onclick="startGame()">Começar</button>
+</div>
+
+<div id="challenge1" class="container" style="display: none;">
+    <h2 id="question1">Como se chama o teu namorado?</h2>
+    <input type="text" id="answer1" placeholder="Digite aqui..." style="padding: 10px; width: 80%; max-width: 400px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+    <div id="feedback1" style="margin-top: 10px;"></div>
+    <button class="button" onclick="checkAnswer1()">Enviar</button>
+</div>
+
+<div id="challenge1Complete" class="container" style="display: none;">
+    <h1>Parabéns, completas-te a primeira fase!</h1>
+    <p>Podes abrir as 2 primeiras prendas, amorito! ❤️</p>
+    <button class="button" onclick="goToChallenge2()">Continuar</button>
+</div>
+
+<div id="challenge2" class="container" style="display: none;">
+    <h2>Desafio 2: Jogo da Memória </h2>
+    <p>Encontra todos os pares iguais! São 6 pares agora!</p>
+    <div id="memory-game"></div>
+    <div id="memory-feedback" style="margin-top: 20px;"></div>
+    <button class="button" id="nextAfterMemory" style="display: none;" onclick="goToChallenge3()">Continuar</button>
+</div>
+
+<div id="challenge3" class="container" style="display: none;">
+    <h2>Desafio 3: Quiz de Natal</h2>
+    <div class="quiz-container">
+        <div id="quiz-question" class="quiz-question"></div>
+        <ul id="quiz-options" class="quiz-options"></ul>
+    </div>
+</div>
+
+<div id="quizComplete" class="container" style="display: none;">
+    <h1>Estás quase lá, amor!</h1>
+    <p>Mais um desafio concluído, e o melhor está por vir... ❤️</p>
+    <button class="button" onclick="goToChallenge4()">Próximo Desafio</button>
+</div>
+
+<div id="challenge4" class="container" style="display: none;">
+    <h2 id="question4">Desafio 4: Responde as perguntas!</h2>
+    <input type="text" id="answer4" placeholder="Digite aqui..." style="padding: 10px; width: 80%; max-width: 400px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+    <div id="feedback4" style="margin-top: 10px;"></div>
+    <button class="button" onclick="checkAnswer4()">Enviar</button>
+</div>
+
+<div id="challenge4Complete" class="container" style="display: none;">
+    <h1>Vês, não é assim tão difícil!</h1>
+    <p>Por causa deste desafio, podes abrir mais 2 prendinhas eheheheh! ❤️</p>
+    <button class="button" onclick="goToChallenge5()">Último Desafio</button>
+</div>
+
+<div id="challenge5" class="container" style="display: none;">
+    <h2 id="question5">Desafio 5: O Jogo de Enigmas</h2>
+    <input type="text" id="answer5" placeholder="Digite sua resposta..." style="padding: 10px; width: 80%; max-width: 400px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;">
+    <div id="feedback5" style="margin-top: 10px;"></div>
+    <button class="button" onclick="checkAnswer5()">Enviar</button>
+</div>
+
+<div id="challenge5Complete" class="container" style="display: none;">
+    <h1>Parabéns, meu amor! ❤️</h1>
+    <p>Conseguis-te resolver todos os enigmas e desbloqueas-te todas as prendas. Amo-te para sempre! 🎁</p>
+</div>
+
+<script>
+    function startGame() {
+        document.getElementById("intro").style.display = "none";
+        document.getElementById("challenge1").style.display = "block";
+    }
+
+    let questionIndex = 0;
+    const questions = [
+        {
+        question: "Como se chama o teu namorado?",
+        answer: "simão"
+    },
+    {
+        question: "Como te chamas?",
+        answer: "allison"
+    },
+    {
+        question: "Que dia é hoje?",
+        answer: "natal"
+    },
+    {
+        question: "Estás muito entusiasmada com as prendas?",
+        answer: "sim"
+    }
+];
+
+function checkAnswer1() {
+    const input = document.getElementById("answer1").value.toLowerCase().trim();
+    const feedback = document.getElementById("feedback1");
+
+    if (input === questions[questionIndex].answer) {
+        feedback.textContent = "Resposta correta!";
+        feedback.style.color = "green";
+        questionIndex++;
+        if (questionIndex < questions.length) {
+            document.getElementById("question1").textContent = questions[questionIndex].question;
+            document.getElementById("answer1").value = "";
+        } else {
+            document.getElementById("challenge1").style.display = "none";
+            document.getElementById("challenge1Complete").style.display = "block";
+        }
+    } else {
+        feedback.textContent = "Resposta incorreta, tente novamente!";
+        feedback.style.color = "red";
+    }
+}
+
+function goToChallenge2() {
+    document.getElementById("challenge1Complete").style.display = "none";
+    document.getElementById("challenge2").style.display = "block";
+    initializeMemoryGame();
+}
+
+const cardsData = ["🎄", "🎅", "❄️", "🤶", "🎁", "⭐", "🎄", "🎅", "❄️", "🤶", "🎁", "⭐"];
+let firstCard = null, secondCard = null, matches = 0;
+
+function initializeMemoryGame() {
+    const memoryGame = document.getElementById("memory-game");
+    memoryGame.innerHTML = "";
+    matches = 0;
+
+    const shuffledCards = cardsData.sort(() => Math.random() - 0.5);
+    shuffledCards.forEach(symbol => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.dataset.symbol = symbol;
+        card.addEventListener("click", () => flipCard(card));
+        memoryGame.appendChild(card);
+    });
+}
+
+function flipCard(card) {
+    if (card.classList.contains("flipped") || secondCard) return;
+    card.classList.add("flipped");
+    card.textContent = card.dataset.symbol;
+
+    if (!firstCard) {
+        firstCard = card;
+    } else {
+        secondCard = card;
+
+        if (firstCard.dataset.symbol === secondCard.dataset.symbol) {
+            matches++;
+            firstCard = null;
+            secondCard = null;
+
+            if (matches === cardsData.length / 2) {
+                document.getElementById("nextAfterMemory").style.display = "block";
+            }
+        } else {
+            setTimeout(() => {
+                firstCard.classList.remove("flipped");
+                secondCard.classList.remove("flipped");
+                firstCard.textContent = "";
+                secondCard.textContent = "";
+                firstCard = null;
+                secondCard = null;
+            }, 1000);
+        }
+    }
+}
+
+function goToChallenge3() {
+    document.getElementById("challenge2").style.display = "none";
+    document.getElementById("challenge3").style.display = "block";
+    initializeQuiz();
+}
+
+const quizQuestions = [
+    {
+        question: "Onde jantámos a primeira vez?",
+        options: ["Commerce", "Jardin de Portugal", "McDonald's", "D'amici"],
+        correct: 3
+    },
+    {
+        question: "De qual cor era a primeira rosa que eu te dei?",
+        options: ["Vermelha", "Branca", "Preta", "Rosa"],
+        correct: 0
+    },
+    {
+        question: "Qual a nossa música?",
+        options: ["Lua", "Te Vivo", "Contramão", "Lençol Dobrado"],
+        correct: 2
+    }
+];
+let currentQuizIndex = 0;
+
+function initializeQuiz() {
+    const questionElem = document.getElementById("quiz-question");
+    const optionsElem = document.getElementById("quiz-options");
+
+    questionElem.textContent = quizQuestions[currentQuizIndex].question;
+    optionsElem.innerHTML = "";
+
+    quizQuestions[currentQuizIndex].options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.onclick = () => checkQuizAnswer(index);
+        optionsElem.appendChild(button);
+    });
+}
+
+function checkQuizAnswer(selectedIndex) {
+    const correctIndex = quizQuestions[currentQuizIndex].correct;
+
+    if (selectedIndex === correctIndex) {
+        currentQuizIndex++;
+        if (currentQuizIndex < quizQuestions.length) {
+            initializeQuiz();
+        } else {
+            document.getElementById("challenge3").style.display = "none";
+            document.getElementById("quizComplete").style.display = "block";
+        }
+    } else {
+        alert("Resposta incorreta! Tente novamente.");
+    }
+}
+
+const challenge4Questions = [
+    { question: "Qual a nossa data?", answer: "14/02/2024" },
+    { question: "Quem quis dar o primeiro beijo?", answer: "Simão" },
+    { question: "Qual foi a primeira prenda que o Simão te deu?", answer: "Colar" }
+];
+let challenge4Index = 0;
+
+function goToChallenge4() {
+    document.getElementById("quizComplete").style.display = "none";
+    document.getElementById("challenge4").style.display = "block";
+    loadChallenge4Question();
+}
+
+function loadChallenge4Question() {
+    const questionElem = document.getElementById("question4");
+    const inputElem = document.getElementById("answer4");
+    const feedbackElem = document.getElementById("feedback4");
+
+    questionElem.textContent = challenge4Questions[challenge4Index].question;
+    inputElem.value = "";
+    feedbackElem.textContent = "";
+}
+
+function checkAnswer4() {
+    const input = document.getElementById("answer4").value.toLowerCase().trim();
+    const feedback = document.getElementById("feedback4");
+
+    if (input === challenge4Questions[challenge4Index].answer.toLowerCase()) {
+        feedback.textContent = "Resposta correta!";
+        feedback.style.color = "green";
+        challenge4Index++;
+
+        if (challenge4Index < challenge4Questions.length) {
+            loadChallenge4Question();
+        } else {
+            document.getElementById("challenge4").style.display = "none";
+            document.getElementById("challenge4Complete").style.display = "block";
+        }
+    } else {
+        feedback.textContent = "Resposta incorreta, tente novamente!";
+        feedback.style.color = "red";
+    }
+}
+
+const challenge5Enigmas = [
+    { question: "Sou feito para andar, mas não tenho pernas. O que sou?", answer: "Sapato" },
+    { question: "Sou um local onde estivemos juntos, onde brindamos ao amor.", answer: "Restaurante" },
+    { question: "Sou algo que simboliza o infinito quando se junta a outro. O que sou?", answer: "Aliança" }
+];
+let challenge5Index = 0;
+
+function goToChallenge5() {
+    document.getElementById("challenge4Complete").style.display = "none";
+    document.getElementById("challenge5").style.display = "block";
+    loadChallenge5Enigma();
+}
+
+function loadChallenge5Enigma() {
+    const questionElem = document.getElementById("question5");
+    const inputElem = document.getElementById("answer5");
+    const feedbackElem = document.getElementById("feedback5");
+
+    questionElem.textContent = challenge5Enigmas[challenge5Index].question;
+    inputElem.value = "";
+    feedbackElem.textContent = "";
+}
+
+function checkAnswer5() {
+    const input = document.getElementById("answer5").value.toLowerCase().trim();
+    const feedback = document.getElementById("feedback5");
+
+    if (input === challenge5Enigmas[challenge5Index].answer.toLowerCase()) {
+        feedback.textContent = "Resposta correta!";
+        feedback.style.color = "green";
+        challenge5Index++;
+
+        if (challenge5Index < challenge5Enigmas.length) {
+            loadChallenge5Enigma();
+        } else {
+            document.getElementById("challenge5").style.display = "none";
+            document.getElementById("challenge5Complete").style.display = "block";
+        }
+    } else {
+        feedback.textContent = "Resposta incorreta, tente novamente!";
+        feedback.style.color = "red";
+    }
+}
+</script>
+</body>
+</html>
